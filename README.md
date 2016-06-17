@@ -31,8 +31,6 @@ For example, I like to know when are the next trains heading to the main station
 
 More info about the setup on RPi soon...
 
-```
-
 ## About
 
 The script uses [schiene](https://github.com/kennell/schiene), a very cool Python library for interacting with Bahn.de (as an unofficial API client). You may need to install it beforehand. 
