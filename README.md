@@ -21,6 +21,7 @@ I use this micro app to display on the screen of my raspberry pi the time for th
 =P3==> 08, next in 28,48
  13:50 | 14:10 | 14:30
 .........................
+```
 
 You can have more or less lines depending on your needs. Note that the lower bar is a progress bar. When it gets full, the time are updated. It happens every 30 seconds. But you can change that (`refresh` parameter). 
 
