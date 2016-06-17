@@ -4,7 +4,7 @@ A small Python script to display and refresh periodically the time of your next 
 
 Since it is fetching data from the Deutsche Bahn, you may use this script for display next connection times on any line in whole germany. It takes into account delays, train cancelations, and probably missed connections on the way. 
 
-When a delay information is available, the number of minutes `Y` is added to the display time `Z`` as `Z+Y`. If other troubles are detected (train canceled, connection will be probably missed), the character `X` is displayed besides the number of minutes `Z` as `ZX`. In that case, it is better to check manually online for more information. 
+When a delay information is available, the number of minutes `Y` is added to the display time `Z` as `Z+Y`. If other troubles are detected (train canceled, connection will be probably missed), the character `X` is displayed besides the number of minutes `Z` as `ZX`. In that case, it is better to check manually online for more information. 
 
 ## Example
 
