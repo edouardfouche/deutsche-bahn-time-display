@@ -94,7 +94,7 @@ class DeutscheBahnTimeDisplay():
             time.sleep(self.refresh/25)
         
 def main():
-    refresh = 30
+    refresh = 30 # Number of seconds that we should wait before refreshing 
     app = DeutscheBahnTimeDisplay(refresh) # In the following lines, declare the trips your interested in 
     app.add_connection(("=HBF==>", 'Schwabstraße, Stuttgart', 'Stuttgart HbF'))
     app.add_connection(("=IBM==>", 'Schwabstraße, Stuttgart', 'Böblingen Zimmerschlag'))

@@ -4,7 +4,7 @@ A small Python script to display and refresh periodically the time of your next 
 
 Since it is fetching data from the Deutsche Bahn, you may use this script for display next connection times on any line in whole germany. It takes into account delays, train cancelations, and probably missed connections on the way. 
 
-When a delay information is available, the number of minutes `Y` is added to the display time `Z` as `Z+Y`. If other troubles are detected (train canceled, connection will be probably missed), the character `X` is displayed besides the number of minutes `Z` as `ZX`. In that case, it is better to check manually online for more information. 
+When a delay information is available, the number of minutes `Y` is added to the displayed time `Z` as `Z+Y`. If other troubles are detected (train canceled, connection will be probably missed), the character `X` is displayed besides the number of minutes `Z` as `ZX`. In that case, we recommend you to check manually on Deutsche Bahn or on your local transportation website for more information. 
 
 ## Example
 
@@ -20,20 +20,20 @@ I use this micro app to display on the screen of my raspberry pi the time for th
 
 =P3==> 08, next in 28,48
  13:50 | 14:10 | 14:30
-.........................
+...................
 ```
 
-You can have more or less lines depending on your needs. Note that the lower bar is a progress bar. When it gets full, the time are updated. It happens every 30 seconds. But you can change that (`refresh` parameter). 
+You can have more or less lines depending on your needs. Note that the lower bar is a progress bar. When it gets full, the time table gets updated. It happens every 30 seconds. But you can change that (`refresh` parameter). 
 
 For example, I like to know when are the next trains heading to the main station (Hauptbahnhof), but also to IBM, where I currently work, and ROTO, where my girlfriend works. This looks like that on my RPi:
 
-<Insert GIF>
+!Insert GIF!
 
 More info about the setup on RPi soon...
 
 ## About
 
-The script uses [schiene](https://github.com/kennell/schiene), a very cool Python library for interacting with Bahn.de (as an unofficial API client). You may need to install it beforehand. 
+The script uses [schiene](https://github.com/kennell/schiene), a very cool Python library for interacting with Bahn.de (as an unofficial API client). You may need to install it beforehand:
 
 ```
 pip install schiene
