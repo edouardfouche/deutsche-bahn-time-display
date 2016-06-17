@@ -8,7 +8,7 @@ When a delay information is available, the number of minutes `Y` is added to the
 
 ## Example
 
-I use this micro app to display on the screen of my raspberry pi the time for the next trains leading the places in am interested to. For example, when it is 13:41, it would display something like this for my places of interest `P1`, `P2` and `P3`:
+I use this micro app to display on the screen of my raspberry pi the time for the next trains leading the places in am interested to. For example, when it is 13:41, it would display something like this, for my places of interest `P1`, `P2` and `P3`:
 
 ```
 =========================
@@ -18,14 +18,23 @@ I use this micro app to display on the screen of my raspberry pi the time for th
 =P2==> 29, next in 59,74
  14:10 | 14:40 | 14:55
 
-=P3=> 08, next in 28,48
+=P3==> 08, next in 28,48
  13:50 | 14:10 | 14:30
 .........................
+
+You can have more or less lines depending on your needs. Note that the lower bar is a progress bar. When it gets full, the time are updated. It happens every 30 seconds. But you can change that (`refresh` parameter). 
+
+For example, I like to know when are the next trains heading to the main station (Hauptbahnhof), but also to IBM, where I currently work, and ROTO, where my girlfriend works. This looks like that on my RPi:
+
+<Insert GIF>
+
+More info about the setup on RPi soon...
+
 ```
 
 ## About
 
-The script uses [schiene](https://github.com/kennell/schiene), a cool Python library for interacting with Bahn.de (as an unofficial API client). You may need to install it beforehand. 
+The script uses [schiene](https://github.com/kennell/schiene), a very cool Python library for interacting with Bahn.de (as an unofficial API client). You may need to install it beforehand. 
 
 ```
 pip install schiene

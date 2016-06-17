@@ -26,10 +26,11 @@ def parse(req, time=False):
     return res
 
 class DeutscheBahnTimeDisplay():
-    def __init__(self):
+    def __init__(self, refresh=30):
         self.schiene = schiene.Schiene() # initialize crawler
         self.connections = [] # Contains the trips we are interested in
         self.display = [] # Contains the strings to display 
+        self.refresh = refresh
         
     def add_connection(self, connection):
         """
@@ -90,10 +91,11 @@ class DeutscheBahnTimeDisplay():
         """Just display an array of point as animation"""
         for i in range(25):
             print('.'*(i+1),end="\r")
-            time.sleep(1)
+            time.sleep(self.refresh/25)
         
 def main():
-    app = DeutscheBahnTimeDisplay() # In the following lines, declare the trips your interested in 
+    refresh = 30
+    app = DeutscheBahnTimeDisplay(refresh) # In the following lines, declare the trips your interested in 
     app.add_connection(("=HBF==>", 'Schwabstraße, Stuttgart', 'Stuttgart HbF'))
     app.add_connection(("=IBM==>", 'Schwabstraße, Stuttgart', 'Böblingen Zimmerschlag'))
     app.add_connection(("=ROTO=>", 'Schwabstraße, Stuttgart', 'Leinfelden Frank, Leinfelden-Echterdingen'))
