@@ -15,10 +15,10 @@ I use this micro app to display on the screen of my raspberry pi the time for th
 =P1===> 01, next in 09,11
  13:42 | 13:50 | 13:52
 
-=P2==> 29, next in 59,74
+=P2===> 29, next in 59,74
  14:10 | 14:40 | 14:55
 
-=P3==> 08, next in 28,48
+=P3===> 08, next in 28,48
  13:50 | 14:10 | 14:30
 ...................
 ```
@@ -27,7 +27,7 @@ You can have more or less lines depending on your needs. Note that the lower bar
 
 For example, I like to know when are the next trains heading to the main station (Hauptbahnhof), but also to IBM, where I currently work, and ROTO, where my girlfriend works. This looks like that on my RPi:
 
-!Insert GIF!
+- Insert GIF
 
 More info about the setup on RPi soon...
 
