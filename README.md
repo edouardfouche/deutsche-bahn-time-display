@@ -27,7 +27,7 @@ You can have more or less lines depending on your needs. Note that the lower bar
 
 For example, I like to know when are the next trains heading to the main station (Hauptbahnhof), but also to IBM, where I currently work, and ROTO, where my girlfriend works. This looks like that on my RPi:
 
-- Insert GIF
+![alt tag](https://github.com/edouardfouche/deutsche-bahn-time-display/blob/master/example.gif)
 
 More info about the setup on RPi soon...
 
