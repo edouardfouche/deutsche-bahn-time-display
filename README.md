@@ -31,8 +31,6 @@ For example, I like to know when are the next trains heading to the main station
 
 I use the script to display the time of the next trains 24/7 on a raspberry pi: <a href="https://www.youtube.com/watch?v=Ocr8C1BaPi8" title="Title"> Ok Rpi, show me the next trains </a>
 
-More info about the setup on RPi soon...
-
 ## About
 
 The script uses [schiene](https://github.com/kennell/schiene), a very cool Python library for interacting with Bahn.de (as an unofficial API client). You may need to install it beforehand:
