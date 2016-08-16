@@ -25,9 +25,11 @@ I use this micro app to display on the screen of my raspberry pi the time for th
 
 You can have more or less lines depending on your needs. Note that the lower bar is a progress bar. When it gets full, the time table gets updated. It happens every 30 seconds. But you can change that (`refresh` parameter). 
 
-For example, I like to know when are the next trains heading to the main station (Hauptbahnhof), but also to IBM, where I currently work, and ROTO, where my girlfriend works. This looks like that on my RPi:
+For example, I like to know when are the next trains heading to the main station (Hauptbahnhof), but also to IBM, where I currently work, and ROTO, where my girlfriend works. This is what it looks like in the terminal (accelerated):
 
-- Insert GIF
+![alt tag](https://github.com/edouardfouche/deutsche-bahn-time-display/blob/master/example.gif)
+
+I use the script to display the time of the next trains 24/7 on a raspberry pi: <a href="https://www.youtube.com/watch?v=Ocr8C1BaPi8" title="Title"> Ok Rpi, show me the next trains </a>
 
 More info about the setup on RPi soon...
 
