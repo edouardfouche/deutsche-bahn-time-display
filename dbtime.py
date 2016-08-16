@@ -67,8 +67,8 @@ class DeutscheBahnTimeDisplay():
         conn = self.schiene.connections(start, goal, now)
         conn_dep = parse(conn) # Parse the raw data gained from the crawler
 
-        if "ROTO" in pref: ### Add some restrain, just for ROTO (custom)
-            conn_dep = [x for x in conn_dep if x[2:5] != ":00"] # This time is not relevant to go to roto
+        #if "ROTO" in pref: ### Add some restrain, just for ROTO (custom)
+        #    conn_dep = [x for x in conn_dep if x[2:5] != ":00"] # This time is not relevant to go to roto
             
         conn_dep = conn_dep[:3]
         conn_time = [round(abs((datetime.datetime.strptime(x[:5],"%H:%M") - time_now)).seconds/60) for x in conn_dep]
@@ -97,7 +97,7 @@ def main():
     refresh = 30 # Number of seconds that we should wait before refreshing 
     app = DeutscheBahnTimeDisplay(refresh) # In the following lines, declare the trips your interested in 
     app.add_connection(("=HBF==>", 'Schwabstraße, Stuttgart', 'Stuttgart HbF'))
-    app.add_connection(("=IBM==>", 'Schwabstraße, Stuttgart', 'Böblingen Zimmerschlag'))
+    app.add_connection(("=IBM==>", 'Schwabstraße, Stuttgart', 'Böblingen, Schönaicher Straße 220'))
     app.add_connection(("=ROTO=>", 'Schwabstraße, Stuttgart', 'Leinfelden Frank, Leinfelden-Echterdingen'))
     app.run()
 
