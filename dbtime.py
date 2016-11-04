@@ -8,97 +8,133 @@ import datetime
 import time
 import os
 
-def parse(req, time=False):
-    """Extract relevant info from the connections"""
-    res = []
-    for s in req:
-        res.append(s['departure'])
-        if not s.get("canceled", False):
-            if s.get("ontime", False):
-                pass
-            else:
-                if "delay" in s:
-                    res[-1] = res[-1] + "+%s"%s['delay']['delay_departure']
+def sanitize(req):
+    """Enhance the information content"""
+    # get current time
+    now = datetime.datetime.now()
+    time_now = datetime.datetime.strptime(now.strftime("%H:%M"),"%H:%M")
+
+    for i,s in enumerate(req):        
+        if s.get("ontime", False):
+            req[i]['status'] = "+0"
+        elif "delay" in s:
+            req[i]['status'] = "+%s"%s['delay']['delay_departure']
+        elif s.get("canceled", False):
+            req[i]['status'] = "X"
         else:
-            res[-1] = res[-1] + "X"
-        if time:
-            res[-1] = res[-1] + " (" + s['time'][2:4] + "'')"
-    return res
+            req[i]['status'] = ""
+
+        time_to_wait = round(abs((datetime.datetime.strptime(s['departure'],"%H:%M") - time_now)).seconds/60)
+        if time_to_wait < 1000:
+            req[i]['time_to_wait'] = str(time_to_wait)
+        else:
+            req[i]['time_to_wait'] = str(1440-time_to_wait)
+    return req
 
 class DeutscheBahnTimeDisplay():
     def __init__(self, refresh=30):
         self.schiene = schiene.Schiene() # initialize crawler
-        self.connections = [] # Contains the trips we are interested in
+        self.trips = [] # Contains the trips we are interested in
         self.display = [] # Contains the strings to display 
         self.refresh = refresh
         
-    def add_connection(self, connection):
+    def add_trip(self, start, goal, prefix=None, only_direct=False):
         """
         Add a streak to be displayed on the list.
-        Each streak should be entered as a 3-tuple where:
-        element 1: The prefix of the streak you want to show (to be printed)
-        element 2: Start station (as on the DB website)
-        element 3: Goal station (as on the DB website)
+        Each streak should be defined by a start, a goal and optional a prefix
+        
+        Arguments
+        ---------
+            start: str
+                Start station (as on the DB website)
+            goal: str
+                Goal station (as on the DB website)
+            prefix: str, optional
+                The prefix of the streak you want to show (to be printed)
+                We recommend a string of 7 characters of the shape "=XXXX=>",
+                where X can be either additional "=" or an abbreviation for
+                your trip/destination.
+                If no prefix is given, it will be set to "=XX===>" where XX are
+                the first 2 capitalized letters of the destination of the trip. 
+            only_direct: bool, default: False
+                If True, return only direct connections. 
         """
-        self.connections.append(connection)
+        if prefix is None: 
+            prefix = "=%s===>"%(goal[0:2].upper())
+
+        self.trips.append({"start":start, "goal":goal, "prefix":prefix, 
+                           "only_direct":only_direct})
                 
     def run(self):   
-        """Run the app and display the result, forever."""             
+        """Run the app and display the result, forever."""  
+        j = 0           
         while(True):
-            self.display = [] # Erase information from last iteration 
-            try:
-                for connection in self.connections:
-                    self.display.append(self._format_connections(connection[0], connection[1], connection[2]))
-            except Exception as e: 
-                print("ERROR: %s"%str(e))
-            else: 
-                self._print()
+            self.get_data()
             
-            self._animate()
-            
-    def _format_connections(self, pref, start, goal):
-        """
-        Parse and return the current string corresponding to next travel 
-        possibiblities between start and goal.
-        """
-        now = datetime.datetime.now()
-        time_now = datetime.datetime.strptime(now.strftime("%H:%M"),"%H:%M")
-        
-        conn = self.schiene.connections(start, goal, now)
-        conn_dep = parse(conn) # Parse the raw data gained from the crawler
+            #print the content of each trip in self.display on the terminal              
+            for i in range(25): 
+                if i % 5 == 0: # change displayed trip every 5 units 
+                    os.system('cls' if os.name == 'nt' else 'clear') # flush the terminal
+                    print("%s/%s======================"%(j+1,len(self.display))) # just esthetic 
+                    print(self.display[j])
+                    j = (j+1)%len(self.display)
+                    
+                print('.'*(i+1),end="\r")
+                time.sleep(self.refresh/25)
 
-        #if "ROTO" in pref: ### Add some restrain, just for ROTO (custom)
-        #    conn_dep = [x for x in conn_dep if x[2:5] != ":00"] # This time is not relevant to go to roto
+    def get_data(self):
+        self.display = [] # Erase information from last iteration 
+        for trip in self.trips:
+            self.display.append(self.format_information(trip))
             
-        conn_dep = conn_dep[:3]
-        conn_time = [round(abs((datetime.datetime.strptime(x[:5],"%H:%M") - time_now)).seconds/60) for x in conn_dep]
-        conn_time = [str(x) if x < 1000 else str(1440-x) for x in conn_time]  # Handle time after midnight
-        conn_time = [x+y[5:] if len(y)>5 else x.zfill(2) for x,y in zip(conn_time,conn_dep)]
-        
-        if not conn_time:
-            return "%s\tERROR: no data.\n"%(pref)
-        elif len(conn_time) == 1:
-            return "%s\t%s, the last one.\n"%(pref, conn_time[0])
-        else:
-            return "%s\t%s, next in %s\n"%(pref, conn_time[0], ",".join(conn_time[1:])) + " %s "%" | ".join(conn_dep)
-        
-    def _print(self):
-        """Print the content of self.display on the terminal"""
-        os.system('cls' if os.name == 'nt' else 'clear') # flush the terminal
-        print("=========================" + "\n" + "\n\n".join(self.display))
+    def format_information(self, trip):
+        """
+        Parse and return the current string to be printed corresponding to next 
+        travel possibiblities between start and goal.
+        """
+
+        # get current time
+        now = datetime.datetime.now()
+
+        start = trip['start']
+        goal = trip['goal']
+        prefix = trip['prefix']
+
+        try:
+            conn = self.schiene.connections(start, goal, now,
+                                            only_direct=trip['only_direct'])
+        except:
+            return "ERROR: no data"
+        else: 
+            conn = sanitize(conn) # Parse the raw data gained from the crawler
             
-    def _animate(self):
-        """Just display an array of point as animation"""
-        for i in range(25):
-            print('.'*(i+1),end="\r")
-            time.sleep(self.refresh/25)
+            time_to_wait_list = [x['time_to_wait'] for x in conn]
+            product_list = [','.join(x['products']) for x in conn]
+            departure_list = [x['departure'] for x in conn]
+            time_list = [x['time'] for x in conn]
+            status_list = [x['status'] for x in conn]
+
+            max_product_length = max([len(x) for x in product_list])
+            output = "%s %s"%(prefix, ",".join(time_to_wait_list))
+            for i, el in enumerate(product_list):
+                output += "\n"
+                prod = product_list[i]
+                if len(prod) < max_product_length: # esthetic tuning
+                    prod = prod + " "*(max_product_length - len(prod))
+                output += "%s | %s | %s %s"%(prod, departure_list[i], 
+                                            time_list[i], status_list[i])
+        
+            return output
         
 def main():
     refresh = 30 # Number of seconds that we should wait before refreshing 
-    app = DeutscheBahnTimeDisplay(refresh) # In the following lines, declare the trips your interested in 
-    app.add_connection(("=HBF==>", 'Schwabstraße, Stuttgart', 'Stuttgart HbF'))
-    app.add_connection(("=IBM==>", 'Schwabstraße, Stuttgart', 'Böblingen, Schönaicher Straße 220'))
-    app.add_connection(("=ROTO=>", 'Schwabstraße, Stuttgart', 'Leinfelden Frank, Leinfelden-Echterdingen'))
+    app = DeutscheBahnTimeDisplay(refresh) 
+    
+    # In the following lines, declare the trips you are interested in 
+    app.add_trip(start='Karlsruhe HbF', goal='Stuttgart HbF', prefix= "=HOME=>", only_direct=True)
+    
+    #app.add_trip(start='Stuttgart HbF', goal='Karlsruhe HbF', prefix= "=KA===>")
+    #app.add_trip(start='Schwabstraße, Stuttgart', goal='Leinfelden Frank, Leinfelden-Echterdingen', prefix="=ROTO=>")
     app.run()
 
 if __name__ == '__main__': 

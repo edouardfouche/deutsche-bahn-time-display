@@ -39,3 +39,32 @@ The script uses [schiene](https://github.com/kennell/schiene), a very cool Pytho
 pip install schiene
 ```
 
+## Update Version 2 - 04/11/16
+
+Major refactor. 
+
+The dispays shows now more information for each trip: 
+- shows the 5 next connections
+- Product type (S/RE/IRE/IC/ICE...)
+- Departure time
+- Duration of the trip
+- Status (ontime (+0), late (+Something), canceled (X))
+
+The printing method alternates between each of the trips every 5 units. 
+
+Possibility to fetch only direct connection or not (attribute only_direct of add_trip)
+
+Typically, this looks like this now (with one trip):
+
+```
+1/1======================
+=HOME=> 23,36,82,143,165
+IC  | 11:06 | 0:57 +0
+RE  | 11:19 | 1:20 +0
+IC  | 12:05 | 0:44 +0
+IC  | 13:06 | 0:53 
+ICE | 13:28 | 0:36 
+.......
+```
+
+
