@@ -3,6 +3,7 @@
 Created on Tue May 24 15:42:14 2016
 Author: Edouard Fouché
 """
+from __future__ import print_function
 import schiene
 import datetime
 import time
@@ -72,14 +73,15 @@ class DeutscheBahnTimeDisplay():
             self.get_data()
             
             #print the content of each trip in self.display on the terminal              
-            for i in range(25): 
+            for i in range(25):
+		os.system('cls' if os.name == 'nt' else 'clear') 
                 if i % 5 == 0: # change displayed trip every 5 units 
-                    os.system('cls' if os.name == 'nt' else 'clear') # flush the terminal
-                    print("%s/%s======================"%(j+1,len(self.display))) # just esthetic 
-                    print(self.display[j])
-                    j = (j+1)%len(self.display)
+                    j = (j+1)%len(self.display)    
+                
+		print("%s/%s======================"%(j+1,len(self.display))) # just esthetic 
+                print(self.display[j])
                     
-                print('.'*(i+1),end="\r")
+                print('.'*(i+1))#,end="\r")
                 time.sleep(self.refresh/25)
 
     def get_data(self):
@@ -102,13 +104,13 @@ class DeutscheBahnTimeDisplay():
 
         try:
             conn = self.schiene.connections(start, goal, now,
-                                            only_direct=trip['only_direct'])
-        except:
-            return "ERROR: no data"
+                                           only_direct=trip['only_direct'])
+        except Exception as e:
+            raise e
         else: 
             conn = sanitize(conn) # Parse the raw data gained from the crawler
             
-            time_to_wait_list = [x['time_to_wait'] for x in conn]
+            time_to_wait_list = [str(int(float(x['time_to_wait']))) for x in conn]
             product_list = [','.join(x['products']) for x in conn]
             departure_list = [x['departure'] for x in conn]
             time_list = [x['time'] for x in conn]
