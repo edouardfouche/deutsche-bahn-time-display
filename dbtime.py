@@ -74,11 +74,11 @@ class DeutscheBahnTimeDisplay():
             
             #print the content of each trip in self.display on the terminal              
             for i in range(25):
-		os.system('cls' if os.name == 'nt' else 'clear') 
+                os.system('cls' if os.name == 'nt' else 'clear') 
                 if i % 5 == 0: # change displayed trip every 5 units 
                     j = (j+1)%len(self.display)    
                 
-		print("%s/%s======================"%(j+1,len(self.display))) # just esthetic 
+                print("%s/%s======================"%(j+1,len(self.display))) # just esthetic 
                 print(self.display[j])
                     
                 print('.'*(i+1))#,end="\r")
