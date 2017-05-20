@@ -8,6 +8,7 @@ import schiene
 import datetime
 import time
 import os
+import sys, getopt
 
 def sanitize(req):
     """Enhance the information content"""
@@ -128,16 +129,32 @@ class DeutscheBahnTimeDisplay():
         
             return output
         
-def main():
+def main(argv):
+    """
+    Each trip are characterized by 4 Arguments
+    - The first one: Start
+    - The second one: Destination
+    - The third one: prefix (7 letters zith an arrow is better, e.g; =WORK=>)
+    - The fourth one: If we should onlw consider direct connections (True) or not (False)
+    """
+    #python dbtime.py "Stuttgart HbF" "Karlsruhe HbF" "==KA==>" True "Schwabstraße, Stuttgart" "Leinfelden Frank, Leinfelden-Echterdingen" "=ROTO=>" False
     refresh = 30 # Number of seconds that we should wait before refreshing 
     app = DeutscheBahnTimeDisplay(refresh) 
     
     # In the following lines, declare the trips you are interested in 
-    app.add_trip(start='Karlsruhe HbF', goal='Stuttgart HbF', prefix= "=HOME=>", only_direct=True)
+    if len(argv) == 0:
+        app.add_trip(start='Karlsruhe HbF', goal='Stuttgart HbF', prefix= "=HOME=>", only_direct=True)
+    else:
+        if len(argv)%4 != 0:
+            raise ValueError("Arguments need to be composed of 4 terms, see documentation.")
+
+        for x in range(int(len(argv)/4)):
+            app.add_trip(start=argv[4*x], goal=argv[4*x+1], prefix= argv[4*x+2], only_direct=argv[4*x+3] == "True")
     
+
     #app.add_trip(start='Stuttgart HbF', goal='Karlsruhe HbF', prefix= "=KA===>")
     #app.add_trip(start='Schwabstraße, Stuttgart', goal='Leinfelden Frank, Leinfelden-Echterdingen', prefix="=ROTO=>")
     app.run()
 
 if __name__ == '__main__': 
-    main()
+    main(sys.argv[1:])
