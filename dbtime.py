@@ -154,7 +154,17 @@ def main(argv):
 
     #app.add_trip(start='Stuttgart HbF', goal='Karlsruhe HbF', prefix= "=KA===>")
     #app.add_trip(start='Schwabstraße, Stuttgart', goal='Leinfelden Frank, Leinfelden-Echterdingen', prefix="=ROTO=>")
-    app.run()
+    while(True):
+        try:
+            app.run()
+        except Exception as e:
+            for i in range(25):
+                os.system('cls' if os.name == 'nt' else 'clear')
+                print("Error: %s"%str(e))
+                print("Restarting in 1 minute") 
+                print('.'*(i+1))#,end="\r")
+                time.sleep(60/25)
+
 
 if __name__ == '__main__': 
     main(sys.argv[1:])
