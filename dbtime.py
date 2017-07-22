@@ -90,14 +90,15 @@ class DeutscheBahnTimeDisplay():
         for trip in self.trips:
             self.display.append(self.format_information(trip))
             
-    def format_information(self, trip):
+    def format_information(self, trip, delta =3):
         """
         Parse and return the current string to be printed corresponding to next 
         travel possibiblities between start and goal.
+        Delta is used to restrict the trips to be at least in a number of minutes
         """
 
         # get current time
-        now = datetime.datetime.now()
+        now = datetime.datetime.now() + datetime.timedelta(minutes = delta)
 
         start = trip['start']
         goal = trip['goal']
