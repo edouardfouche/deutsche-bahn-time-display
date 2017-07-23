@@ -105,8 +105,16 @@ class DeutscheBahnTimeDisplay():
         prefix = trip['prefix']
 
         try:
-            conn = self.schiene.connections(start, goal, now,
+            # Get the next trips from now
+            conn1 = self.schiene.connections(start, goal, now,
                                            only_direct=trip['only_direct'])
+            # Get the next trips after last trip return. This increase the list of results :) 
+            last_departure = conn1[-1]['departure']
+            next_time = now.replace(hour=int(last_departure.split(":")[0]), minute=int(last_departure.split(":")[1]))
+            conn2 = self.schiene.connections(start, goal, next_time+ datetime.timedelta(minutes = 1),
+                                           only_direct=trip['only_direct'])
+            conn = conn1 + conn2
+
         except Exception as e:
             raise e
         else: 
