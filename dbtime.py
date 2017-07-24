@@ -119,6 +119,8 @@ class DeutscheBahnTimeDisplay():
             # Get the next trips after last trip return. This increase the list of results :) 
             last_departure = conn1[-1]['departure']
             next_time = now.replace(hour=int(last_departure.split(":")[0]), minute=int(last_departure.split(":")[1]))
+            if(int(last_departure.split(":")[0]) < now.hour): # That means that it is after midnight then 
+                next_time = next_time + datetime.timedelta(days = 1)
             conn2 = self.schiene.connections(start, goal, next_time+ datetime.timedelta(minutes = 1),
                                            only_direct=trip['only_direct'])
             conn = conn1 + conn2
