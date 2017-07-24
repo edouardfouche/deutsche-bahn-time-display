@@ -9,6 +9,7 @@ import datetime
 import time
 import os
 import sys, getopt
+import threading
 
 def sanitize(req):
     """Enhance the information content"""
@@ -69,26 +70,33 @@ class DeutscheBahnTimeDisplay():
                 
     def run(self):   
         """Run the app and display the result, forever."""  
+        fetcher = threading.Thread(target=self.get_data)
+        fetcher.start()
+        fetcher.join() # Need to wait for the first time. 
+
         j = 0           
         while(True):
-            self.get_data()
-            
             #print the content of each trip in self.display on the terminal              
-            for i in range(25):
+            for i in range(30):
                 os.system('cls' if os.name == 'nt' else 'clear') 
                 if i % 5 == 0: # change displayed trip every 5 units 
                     j = (j+1)%len(self.display)    
                 
-                print("%s/%s======================"%(j+1,len(self.display))) # just esthetic 
+                print("%s/%s==========================="%(j+1,len(self.display))) # just esthetic 
                 print(self.display[j])
                     
                 print('.'*(i+1))#,end="\r")
-                time.sleep(self.refresh/25)
+                time.sleep(self.refresh/30)
+
+            # Start routine to refresh data in a parallel thread 
+            fetcher = threading.Thread(target=self.get_data)
+            fetcher.start()
 
     def get_data(self):
-        self.display = [] # Erase information from last iteration 
+        newdisplay = [] 
         for trip in self.trips:
-            self.display.append(self.format_information(trip))
+            newdisplay.append(self.format_information(trip))
+        self.display = newdisplay # Overwrite information from last iteration 
             
     def format_information(self, trip, delta =3):
         """
@@ -147,7 +155,7 @@ def main(argv):
     - The fourth one: If we should onlw consider direct connections (True) or not (False)
     """
     #python dbtime.py "Stuttgart HbF" "Karlsruhe HbF" "==KA==>" True "Schwabstraße, Stuttgart" "Leinfelden Frank, Leinfelden-Echterdingen" "=ROTO=>" False
-    refresh = 30 # Number of seconds that we should wait before refreshing 
+    refresh = 45 # Number of seconds that we should wait before refreshing 
     app = DeutscheBahnTimeDisplay(refresh) 
     
     # In the following lines, declare the trips you are interested in 
